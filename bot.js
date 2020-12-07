@@ -55,9 +55,12 @@ client.on("message", async(message) => {
       case 'resume':
           resume(serverQueue);
           break;
+      case 'volume':
+            volume(client, message, args)
+            break;
   }
 
-  async function execute(message, serverQueue){
+async function execute(message, serverQueue){
       let vc = message.member.voice.channel;
       if(!vc){
           return message.channel.send("Go to voice chat first");
@@ -98,6 +101,7 @@ client.on("message", async(message) => {
           }
       }
   }
+
   function play(guild, song){
       const serverQueue = queue.get(guild.id);
       if(!song){
@@ -113,12 +117,14 @@ client.on("message", async(message) => {
           })
           serverQueue.txtChannel.send(`Now playing ${serverQueue.songs[0].url}`)
   }
+
   function stop (message, serverQueue){
       if(!message.member.voice.channel)
           return message.channel.send("Gotta be on voice chat for that")
       serverQueue.songs = [];
       serverQueue.connection.dispatcher.end();
   }
+
   function skip (message, serverQueue){
       if(!message.member.voice.channel)
           return message.channel.send("Gotta be on voice chat for that");
@@ -126,6 +132,7 @@ client.on("message", async(message) => {
           return message.channel.send("What are you skipping?");
       serverQueue.connection.dispatcher.end();
   }
+
   function pause(serverQueue){
       if(!serverQueue.connection)
           return message.channel.send("What are you pausing fool?");
@@ -134,8 +141,9 @@ client.on("message", async(message) => {
       if(serverQueue.connection.dispatcher.paused)
           return message.channel.send("The song is already paused");
       serverQueue.connection.dispatcher.pause();
-      message.channel.send("The song has been paused!");
+      message.channel.send("We paused!");
   }
+
   function resume(serverQueue){
       if(!serverQueue.connection)
           return message.channel.send("We have nothing to resume fool!");
@@ -145,5 +153,16 @@ client.on("message", async(message) => {
           return message.channel.send("Do you not hear the music imbecile?!");
       serverQueue.connection.dispatcher.resume();
       message.channel.send("We resumed!");
+  }
+
+   function volume (client, message, args) {
+      const player = client.music.players.get(message.guild.id);
+
+      if (!player) return message.channel.send("No songs playing");
+      if(!args[0]) return message.channel.send(`Current Volume: ${player.volue}`);
+      if(Number(args[0]) <= 0 || Number(args[0]) > 100) return message.channel.send("We'll let you select from 1-100");
+
+      player.setVolume(Number(args[0]));
+      return message.channel.send(`We set the volume to: ${args[0]}`)
   }
 })
