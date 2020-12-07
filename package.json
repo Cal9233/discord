@@ -5,7 +5,8 @@
   "main": "bot.js",
   "scripts": {
     "start": "node bot.js",
-    "devStart": "nodemon bot.js"
+    "devStart": "nodemon bot.js",
+    "heroku-postbuild": "yarn && yarn run build"
   },
   "repository": {
     "type": "git",
