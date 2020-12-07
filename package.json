@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "bot.js",
+  "engine": {
+    "npm": "6.14.5"
+  },
   "scripts": {
     "start": "node bot.js",
     "devStart": "nodemon bot.js",
-    "heroku-postbuild": "yarn && yarn run build"
+    "build": "npm install"
   },
   "repository": {
     "type": "git",
