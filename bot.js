@@ -21,14 +21,18 @@ const queue = new Map();
 //////Music Text////////
 
 client.on('ready', () => {
-  console.log('We are ready')
-})
+    try {
+        console.log('We are ready')
+    } catch (e) {
+        console.error(e)
+    }
+});
 
 client.on("message", msg => {
   if (msg.content === "Venom, what are you?") {
     msg.channel.send("You see, I'm a loser. Like you")
   }
-})
+});
 
 client.on("message", async(message) => {
   const prefix = '!';
@@ -86,16 +90,16 @@ async function execute(message, serverQueue){
 
               queueConstructor.songs.push(song);
 
-              try{
+              try {
                   let connection = await vc.join();
                   queueConstructor.connection = connection;
                   play(message.guild, queueConstructor.songs[0]);
-              }catch (err){
+              } catch (err) {
                   console.error(err);
                   queue.delete(message.guild.id);
                   return message.channel.send(`Unable to join the voice chat ${err}`)
               }
-          }else{
+          } else {
               serverQueue.songs.push(song);
               return message.channel.send(`The song has been added ${song.url}`);
           }
@@ -159,7 +163,7 @@ async function execute(message, serverQueue){
       const player = client.music.players.get(message.guild.id);
 
       if (!player) return message.channel.send("No songs playing");
-      if(!args[0]) return message.channel.send(`Current Volume: ${player.volue}`);
+      if(!args[0]) return message.channel.send(`Current Volume: ${player.volume}`);
       if(Number(args[0]) <= 0 || Number(args[0]) > 100) return message.channel.send("We'll let you select from 1-100");
 
       player.setVolume(Number(args[0]));
